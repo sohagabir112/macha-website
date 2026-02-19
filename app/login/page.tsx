@@ -109,13 +109,15 @@ export default function LoginPage() {
                     )}
 
                     <div className="space-y-2">
-                        <label className="text-xs font-medium text-white/70 uppercase tracking-wider pl-1">Email</label>
+                        <label className="text-xs font-medium text-white/70 uppercase tracking-wider pl-1">
+                            {isLogin ? "Email or Username" : "Email"}
+                        </label>
                         <div className="relative">
                             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
                             <input
-                                name="email"
-                                type="email"
-                                placeholder="hello@example.com"
+                                name={isLogin ? "identifier" : "email"}
+                                type={isLogin ? "text" : "email"}
+                                placeholder={isLogin ? "hello@example.com or username" : "hello@example.com"}
                                 required
                                 className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:border-matcha/50 focus:ring-1 focus:ring-matcha/50 transition-all font-light"
                             />
