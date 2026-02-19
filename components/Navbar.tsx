@@ -19,7 +19,7 @@ export default function Navbar({ cartCount = 0 }: { cartCount?: number }) {
         >
             <div className="container mx-auto px-6 flex items-center justify-between">
                 <Link href="/" className="font-bold text-2xl tracking-tighter text-matcha">
-                    MACHA
+                    MATCHA
                 </Link>
 
                 <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/80 uppercase tracking-widest">

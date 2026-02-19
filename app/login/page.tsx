@@ -88,6 +88,7 @@ export default function LoginPage() {
                                         type="text"
                                         placeholder="John Doe"
                                         required
+                                        autoComplete="name"
                                         className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:border-matcha/50 focus:ring-1 focus:ring-matcha/50 transition-all font-light"
                                     />
                                 </div>
@@ -101,6 +102,7 @@ export default function LoginPage() {
                                         type="text"
                                         placeholder="johndoe"
                                         required
+                                        autoComplete="username"
                                         className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:border-matcha/50 focus:ring-1 focus:ring-matcha/50 transition-all font-light"
                                     />
                                 </div>
@@ -119,6 +121,7 @@ export default function LoginPage() {
                                 type={isLogin ? "text" : "email"}
                                 placeholder={isLogin ? "hello@example.com or username" : "hello@example.com"}
                                 required
+                                autoComplete={isLogin ? "username" : "email"}
                                 className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:border-matcha/50 focus:ring-1 focus:ring-matcha/50 transition-all font-light"
                             />
                         </div>
@@ -134,6 +137,7 @@ export default function LoginPage() {
                                 placeholder="••••••••"
                                 required
                                 minLength={6}
+                                autoComplete={isLogin ? "current-password" : "new-password"}
                                 className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:border-matcha/50 focus:ring-1 focus:ring-matcha/50 transition-all font-light"
                             />
                         </div>
