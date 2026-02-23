@@ -84,9 +84,9 @@ export default async function CartPage() {
                                     </div>
                                 </div>
 
-                                <form action={async (formData) => {
+                                <form action={async () => {
                                     "use server"
-                                    await checkout(formData)
+                                    await checkout()
                                 }}>
                                     <button className="w-full bg-white text-black hover:bg-matcha py-4 rounded-xl font-bold tracking-wider uppercase transition-all flex items-center justify-center gap-2 group">
                                         Checkout
