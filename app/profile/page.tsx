@@ -3,7 +3,6 @@ import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { User, ShoppingBag, Package, LogOut, CreditCard } from 'lucide-react';
-import Image from 'next/image';
 import ProfileInfo from './ProfileInfo';
 
 async function getUserData() {
@@ -46,7 +45,7 @@ export default async function ProfilePage() {
         },
         {
             id: 'ord_987654321',
-            created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+            created_at: new Date(2023, 10, 15).toISOString(),
             status: 'Processing',
             total_amount: 28.50,
             items: [
@@ -56,7 +55,7 @@ export default async function ProfilePage() {
     ];
 
     return (
-        <main className="min-h-screen bg-[#050505] text-white p-6 md:p-12 font-sans relative overflow-hidden">
+        <main className="min-h-screen bg-[#050505] text-white p-6 md:p-12 font-sans relative overflow-hidden" suppressHydrationWarning>
             {/* Background Ambience */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
                 <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-matcha/10 rounded-full blur-[100px]" />
@@ -116,7 +115,7 @@ export default async function ProfilePage() {
                         </div>
 
                         <div className="space-y-4">
-                            {demoOrders.map((order: any) => (
+                            {demoOrders.map((order: { id: string; created_at: string; status: string; total_amount: number; items: unknown }) => (
                                 <div key={order.id} className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-matcha/30 transition-all group">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-white/5">
                                         <div className="flex items-center gap-4">
@@ -141,7 +140,7 @@ export default async function ProfilePage() {
 
                                     <div className="space-y-2">
                                         {/* Parse items cleanly if string or array */}
-                                        {(Array.isArray(order.items) ? order.items : JSON.parse(order.items || '[]')).map((item: any, idx: number) => (
+                                        {(Array.isArray(order.items) ? order.items : JSON.parse(order.items as string || '[]')).map((item: { quantity: number; name?: string; product_name?: string; price: number }, idx: number) => (
                                             <div key={idx} className="flex justify-between text-sm">
                                                 <span className="text-white/70">{item.quantity}x {item.name || item.product_name}</span>
                                                 <span className="text-white/40">${item.price?.toFixed(2)}</span>
