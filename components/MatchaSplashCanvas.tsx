@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useScroll, useSpring, useTransform, MotionValue } from "framer-motion";
+import { useScroll, useSpring, useTransform, MotionValue, motion } from "framer-motion";
 
 const FRAME_COUNT = 240;
 
@@ -150,9 +150,6 @@ export default function MatchaSplashCanvas({
 
 function ScrollGuide({ progress }: { progress: MotionValue<number> }) {
     const opacity = useTransform(progress, [0, 0.1], [1, 0]);
-
-    // Use a motion.div instead of casting style
-    const { motion } = require("framer-motion");
 
     return (
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/40 mix-blend-difference pointer-events-none">
