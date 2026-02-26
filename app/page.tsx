@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { useScroll, useTransform, motion } from "framer-motion";
+import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
 import Link from "next/link";
 import MatchaSplashCanvas from "@/components/MatchaSplashCanvas";
 import ProductSection from "@/components/ProductSection";
@@ -14,7 +14,7 @@ function OverlaySection({
   className = ""
 }: {
   range: [number, number],
-  progress: any,
+  progress: MotionValue<number>,
   children: React.ReactNode,
   className?: string
 }) {
@@ -71,12 +71,14 @@ export default function Home() {
             progress={scrollYProgress}
             className="items-center justify-center text-center"
           >
-            <h1 className="text-7xl md:text-9xl font-bold tracking-tight text-white/90 mb-4">
-              PURE FUSION
-            </h1>
-            <p className="text-xl md:text-2xl font-light tracking-wide text-white/60">
-              The perfect collision of earth and energy.
-            </p>
+            <div className="flex flex-col items-center">
+              <h1 className="text-7xl md:text-9xl font-bold tracking-tight text-white/90 mb-4">
+                PURE FUSION
+              </h1>
+              <p className="text-xl md:text-2xl font-light tracking-wide text-white/60">
+                The perfect collision of earth and energy.
+              </p>
+            </div>
           </OverlaySection>
 
           {/* Beat B: The Impact (25-45%) */}

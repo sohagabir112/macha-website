@@ -10,6 +10,7 @@ export default function MatchaSplashCanvas({
 }: {
     scrollYProgress?: MotionValue<number>
 } = {}) {
+    // Canvas ref
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [images, setImages] = useState<HTMLImageElement[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -55,25 +56,9 @@ export default function MatchaSplashCanvas({
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        // Responsive Canvas Sizing
-        const handleResize = () => {
-            // Set canvas internal resolution to match window size (responsive)
-            // Note: For "contain" logic, we might want higher res, 
-            // but window size is good for performance.
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            renderFrame(smoothProgress.get());
-        };
-
-        window.addEventListener("resize", handleResize);
-        handleResize(); // Initial size
-
         // Render loop triggered by scroll change
-        const unsubscribe = smoothProgress.on("change", (latest) => {
-            renderFrame(latest);
-        });
-
-        function renderFrame(progress: number) {
+        // We define renderFrame inside to capture canvas/ctx/images
+        const renderFrame = (progress: number) => {
             if (!ctx || !canvas) return;
 
             // Map 0-1 to 0-239
@@ -89,7 +74,10 @@ export default function MatchaSplashCanvas({
             const canvasRatio = canvas.width / canvas.height;
             const imgRatio = img.width / img.height;
 
-            let drawWidth, drawHeight, offsetX, offsetY;
+            let drawWidth: number;
+            let drawHeight: number;
+            let offsetX: number;
+            let offsetY: number;
 
             if (canvasRatio > imgRatio) {
                 // Canvas is wider than image (fit height)
@@ -106,12 +94,22 @@ export default function MatchaSplashCanvas({
             }
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // Optional: Fill background to ensure no leaking edges
-            // ctx.fillStyle = "#050505";
-            // ctx.fillRect(0, 0, canvas.width, canvas.height);
-
             ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
         }
+
+        // Responsive Canvas Sizing
+        const handleResize = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            renderFrame(smoothProgress.get());
+        };
+
+        window.addEventListener("resize", handleResize);
+        handleResize(); // Initial size
+
+        const unsubscribe = smoothProgress.on("change", (latest) => {
+            renderFrame(latest);
+        });
 
         // Initial draw
         renderFrame(smoothProgress.get());
@@ -144,7 +142,6 @@ export default function MatchaSplashCanvas({
                 ref={canvasRef}
                 className="w-full h-full object-contain"
             />
-
             {/* Scroll Guide - Fades out */}
             <ScrollGuide progress={smoothProgress} />
         </div>
@@ -154,15 +151,18 @@ export default function MatchaSplashCanvas({
 function ScrollGuide({ progress }: { progress: MotionValue<number> }) {
     const opacity = useTransform(progress, [0, 0.1], [1, 0]);
 
+    // Use a motion.div instead of casting style
+    const { motion } = require("framer-motion");
+
     return (
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/40 mix-blend-difference pointer-events-none">
-            <div
-                style={{ opacity: opacity as any }}
+            <motion.div
+                style={{ opacity }}
                 className="flex flex-col items-center gap-2"
             >
                 <span className="text-xs uppercase tracking-[0.2em]">Scroll to Explore</span>
                 <div className="w-[1px] h-12 bg-gradient-to-b from-white/0 to-white/50" />
-            </div>
+            </motion.div>
         </div>
     );
 }

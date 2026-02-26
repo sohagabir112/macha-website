@@ -2,9 +2,13 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation';
 
-export async function addToCart(product: any) {
+interface Product {
+    name: string;
+    price: number;
+}
+
+export async function addToCart(product: Product) {
     const supabase = await createClient()
 
     const { data: { user } } = await supabase.auth.getUser()

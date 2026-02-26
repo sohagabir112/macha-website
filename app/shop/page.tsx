@@ -6,7 +6,18 @@ import { ShoppingBag, Loader2, Check } from "lucide-react";
 import { addToCart } from "./actions";
 import { useRouter } from "next/navigation";
 
-const PRODUCTS = [
+// Define Product Type locally for UI
+interface Product {
+    id: number;
+    name: string;
+    price: number;
+    image: string;
+    tag: string;
+    description: string;
+    slug: string;
+}
+
+const PRODUCTS: Product[] = [
     {
         id: 1,
         name: "Ceremonial Grade A",
@@ -68,7 +79,7 @@ export default function ShopPage() {
     const [loadingId, setLoadingId] = useState<number | null>(null);
     const [successId, setSuccessId] = useState<number | null>(null);
 
-    const handleAddToCart = async (product: any) => {
+    const handleAddToCart = async (product: Product) => {
         setLoadingId(product.id);
 
         try {
@@ -142,13 +153,17 @@ export default function ShopPage() {
 
                                 {/* Image */}
                                 <div className="absolute inset-0 p-8 flex items-center justify-center group-hover:scale-105 transition-transform duration-700 ease-out">
-                                    <Image
-                                        src={product.image}
-                                        alt={product.name}
-                                        fill
-                                        className="object-contain drop-shadow-2xl"
-                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                    />
+                                    {/* Using next/image requires width/height or fill */}
+                                    {/* For placeholder/demo, ensure images exist in public/img/ */}
+                                    <div className="relative w-full h-full">
+                                         <Image
+                                            src={product.image}
+                                            alt={product.name}
+                                            fill
+                                            className="object-contain drop-shadow-2xl"
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        />
+                                    </div>
                                 </div>
 
                                 {/* Overlay Gradient */}

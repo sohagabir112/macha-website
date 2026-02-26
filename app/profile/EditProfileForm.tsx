@@ -2,11 +2,20 @@
 
 import { useState } from 'react'
 import { updateProfile } from './actions'
-import { User, Save, X } from 'lucide-react'
-import Image from 'next/image'
+import { Save } from 'lucide-react'
 
-export default function EditProfileForm({ profile, onCancel }: { profile: any, onCancel: () => void }) {
-    // We can use useFormState but simple state for now
+interface Profile {
+    full_name?: string;
+    username?: string;
+    avatar_url?: string;
+}
+
+interface EditProfileFormProps {
+    profile: Profile | null;
+    onCancel: () => void;
+}
+
+export default function EditProfileForm({ profile, onCancel }: EditProfileFormProps) {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
@@ -15,13 +24,16 @@ export default function EditProfileForm({ profile, onCancel }: { profile: any, o
         setError(null)
 
         try {
-            const result = await updateProfile(formData)
-            if (result.error) {
+            // Check if we need to call updateProfile manually or if form action handles it
+            // Here we seem to be mixing concepts. If updateProfile is a server action,
+            // we can call it directly.
+            const result = await updateProfile(formData) as { error?: string }
+            if (result?.error) {
                 setError(result.error)
             } else {
-                onCancel() // Close edit mode
+                onCancel()
             }
-        } catch (e) {
+        } catch {
             setError("Failed to update profile")
         } finally {
             setLoading(false)
@@ -29,12 +41,12 @@ export default function EditProfileForm({ profile, onCancel }: { profile: any, o
     }
 
     return (
-        <form action={handleSubmit} className="bg-white/5 border border-white/10 rounded-2xl p-6 relative">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative">
             <h2 className="text-xl font-bold mb-6">Edit Profile</h2>
 
             {error && <div className="text-red-400 text-sm mb-4">{error}</div>}
 
-            <div className="space-y-4">
+            <form action={handleSubmit} className="space-y-4">
                 <div>
                     <label className="block text-sm text-white/60 mb-1">Full Name</label>
                     <input
@@ -55,25 +67,15 @@ export default function EditProfileForm({ profile, onCancel }: { profile: any, o
                     />
                 </div>
 
-                {/* Avatar URL is tricky without upload, simplified for now to text input or hidden if not used often */}
-                {/* <div>
-                    <label className="block text-sm text-white/60 mb-1">Avatar URL</label>
-                    <input 
-                        name="avatarUrl" 
-                        defaultValue={profile?.avatar_url} 
-                        className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-matcha"
-                    />
-                </div> */}
-            </div>
-
-            <div className="flex justify-end gap-3 mt-8">
-                <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-colors">
-                    Cancel
-                </button>
-                <button type="submit" disabled={loading} className="px-6 py-2 bg-matcha text-white rounded-lg font-medium hover:bg-white hover:text-matcha transition-colors disabled:opacity-50 flex items-center gap-2">
-                    {loading ? 'Saving...' : <><Save size={16} /> Save Changes</>}
-                </button>
-            </div>
-        </form>
+                <div className="flex justify-end gap-3 mt-8">
+                    <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" disabled={loading} className="px-6 py-2 bg-matcha text-white rounded-lg font-medium hover:bg-white hover:text-matcha transition-colors disabled:opacity-50 flex items-center gap-2">
+                        {loading ? 'Saving...' : <><Save size={16} /> Save Changes</>}
+                    </button>
+                </div>
+            </form>
+        </div>
     )
 }

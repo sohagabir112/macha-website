@@ -46,6 +46,10 @@ export async function removeCartItem(itemId: string) {
 
 export async function checkout(formData?: FormData) {
     // This would integrate with Stripe or similar
+    // Mark formData as used to suppress lint warning if we ever need it later
+    // In a real app, formData might contain shipping details etc.
+    void formData;
+
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
