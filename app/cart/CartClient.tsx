@@ -1,16 +1,19 @@
 "use client"
 
 import { useState } from 'react'
-import { updateCartItem, removeCartItem, checkout } from './actions'
-import { Trash2, Plus, Minus, Loader2 } from 'lucide-react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { updateCartItem, removeCartItem } from './actions'
+import { Trash2, Plus, Minus } from 'lucide-react'
 
-export default function CartClient({ initialItems }: { initialItems: any[] }) {
-    const [items, setItems] = useState(initialItems)
+interface CartItem {
+    id: string;
+    product_name: string;
+    price: number;
+    quantity: number;
+}
+
+export default function CartClient({ initialItems }: { initialItems: CartItem[] }) {
+    const [items, setItems] = useState<CartItem[]>(initialItems)
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({})
-    const [isCheckingOut, setIsCheckingOut] = useState(false)
-    const router = useRouter()
 
     const handleUpdateQuantity = async (id: string, newQuantity: number) => {
         setLoadingMap(prev => ({ ...prev, [id]: true }))
@@ -43,16 +46,11 @@ export default function CartClient({ initialItems }: { initialItems: any[] }) {
         }
     }
 
-    // We bind this to the layout or handle it globally, but for now purely client side state update 
-    // real-time syncing might be better with optimistic UI
-
     return (
         <div className="space-y-4">
             {items.map((item) => (
                 <div key={item.id} className="bg-white/5 border border-white/5 rounded-xl p-4 flex gap-4 hover:border-white/10 transition-colors group">
-                    {/* Placeholder Image Logic - mapping names to images roughly or use generic */}
                     <div className="w-24 h-24 bg-white/5 rounded-lg flex-shrink-0 flex items-center justify-center p-2">
-                        {/* We try to use the product name to find the image, or fallback */}
                         <div className="text-xs text-white/20 text-center">{item.product_name}</div>
                     </div>
 

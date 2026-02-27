@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { useScroll, useTransform, motion } from "framer-motion";
+import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
 import Link from "next/link";
 import MatchaSplashCanvas from "@/components/MatchaSplashCanvas";
 import ProductSection from "@/components/ProductSection";
@@ -14,7 +14,7 @@ function OverlaySection({
   className = ""
 }: {
   range: [number, number],
-  progress: any,
+  progress: MotionValue<number>,
   children: React.ReactNode,
   className?: string
 }) {
