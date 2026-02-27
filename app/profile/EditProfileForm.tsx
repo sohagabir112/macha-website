@@ -2,15 +2,21 @@
 
 import { useState } from 'react'
 import { updateProfile } from './actions'
-import { User, Save, X } from 'lucide-react'
-import Image from 'next/image'
+import { Save } from 'lucide-react'
 
-export default function EditProfileForm({ profile, onCancel }: { profile: any, onCancel: () => void }) {
+interface Profile {
+    id: string;
+    username: string;
+    full_name: string;
+    avatar_url: string;
+}
+
+export default function EditProfileForm({ profile, onCancel }: { profile: Profile, onCancel: () => void }) {
     // We can use useFormState but simple state for now
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
-    async function handleSubmit(formData: FormData) {
+    const handleSubmit = async (formData: FormData) => {
         setLoading(true)
         setError(null)
 
@@ -21,7 +27,7 @@ export default function EditProfileForm({ profile, onCancel }: { profile: any, o
             } else {
                 onCancel() // Close edit mode
             }
-        } catch (e) {
+        } catch {
             setError("Failed to update profile")
         } finally {
             setLoading(false)
@@ -54,16 +60,6 @@ export default function EditProfileForm({ profile, onCancel }: { profile: any, o
                         required
                     />
                 </div>
-
-                {/* Avatar URL is tricky without upload, simplified for now to text input or hidden if not used often */}
-                {/* <div>
-                    <label className="block text-sm text-white/60 mb-1">Avatar URL</label>
-                    <input 
-                        name="avatarUrl" 
-                        defaultValue={profile?.avatar_url} 
-                        className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-matcha"
-                    />
-                </div> */}
             </div>
 
             <div className="flex justify-end gap-3 mt-8">

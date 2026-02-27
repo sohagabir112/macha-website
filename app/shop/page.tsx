@@ -63,12 +63,22 @@ const PRODUCTS = [
     },
 ];
 
+interface Product {
+    id: number;
+    name: string;
+    price: number;
+    image: string;
+    tag: string;
+    description: string;
+    slug: string;
+}
+
 export default function ShopPage() {
     const router = useRouter();
     const [loadingId, setLoadingId] = useState<number | null>(null);
     const [successId, setSuccessId] = useState<number | null>(null);
 
-    const handleAddToCart = async (product: any) => {
+    const handleAddToCart = async (product: Product) => {
         setLoadingId(product.id);
 
         try {

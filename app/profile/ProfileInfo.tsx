@@ -5,11 +5,30 @@ import { User, Edit2 } from 'lucide-react'
 import Image from 'next/image'
 import EditProfileForm from './EditProfileForm'
 
-export default function ProfileInfo({ profile, user, children }: { profile: any, user: any, children: React.ReactNode }) {
+interface Profile {
+    id: string;
+    username: string;
+    full_name: string;
+    avatar_url: string;
+    website?: string;
+    updated_at: string;
+}
+
+interface User {
+    id: string;
+    email?: string;
+}
+
+export default function ProfileInfo({ profile, user, children }: { profile: Profile, user: User, children: React.ReactNode }) {
     const [isEditing, setIsEditing] = useState(false)
 
     if (isEditing) {
-        return <EditProfileForm profile={profile} onCancel={() => setIsEditing(false)} />
+        return (
+            <EditProfileForm
+                profile={profile}
+                onCancel={() => setIsEditing(false)}
+            />
+        )
     }
 
     return (
