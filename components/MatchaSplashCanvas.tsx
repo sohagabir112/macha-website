@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useScroll, useSpring, useTransform, MotionValue } from "framer-motion";
+import { useScroll, useSpring, useTransform, MotionValue, motion } from "framer-motion";
 
 const FRAME_COUNT = 240;
 
@@ -156,13 +156,13 @@ function ScrollGuide({ progress }: { progress: MotionValue<number> }) {
 
     return (
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/40 mix-blend-difference pointer-events-none">
-            <div
-                style={{ opacity: opacity as any }}
+            <motion.div
+                style={{ opacity }}
                 className="flex flex-col items-center gap-2"
             >
                 <span className="text-xs uppercase tracking-[0.2em]">Scroll to Explore</span>
                 <div className="w-[1px] h-12 bg-gradient-to-b from-white/0 to-white/50" />
-            </div>
+            </motion.div>
         </div>
     );
 }
