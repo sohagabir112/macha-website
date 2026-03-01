@@ -44,7 +44,7 @@ export async function removeCartItem(itemId: string) {
     return { success: true }
 }
 
-export async function checkout(formData?: FormData) {
+export async function checkout() {
     // This would integrate with Stripe or similar
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
