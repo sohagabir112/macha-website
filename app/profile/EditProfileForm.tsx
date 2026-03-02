@@ -2,10 +2,9 @@
 
 import { useState } from 'react'
 import { updateProfile } from './actions'
-import { User, Save, X } from 'lucide-react'
-import Image from 'next/image'
+import { Save } from 'lucide-react'
 
-export default function EditProfileForm({ profile, onCancel }: { profile: any, onCancel: () => void }) {
+export default function EditProfileForm({ profile, onCancel }: { profile: { full_name?: string, username?: string } | null, onCancel: () => void }) {
     // We can use useFormState but simple state for now
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -21,7 +20,7 @@ export default function EditProfileForm({ profile, onCancel }: { profile: any, o
             } else {
                 onCancel() // Close edit mode
             }
-        } catch (e) {
+        } catch {
             setError("Failed to update profile")
         } finally {
             setLoading(false)
