@@ -1,0 +1,4 @@
+## 2024-05-18 - [CRITICAL] Insecure Direct Object Reference (IDOR) in Server Actions
+**Vulnerability:** Server actions (`updateCartItem` and `removeCartItem` in `app/cart/actions.ts`) allowed modifying or deleting rows without verifying ownership of the `itemId`. This means any authenticated (or even unauthenticated, depending on the route protection) user could update or remove other users' cart items if they knew or guessed the item's ID.
+**Learning:** Even though the application uses Supabase, server actions run with privileges and MUST manually enforce the context of the user if RLS is not completely handling it at the API layer, or as an additional defense-in-depth layer.
+**Prevention:** Server actions interacting with user data must explicitly validate authentication (e.g., via `supabase.auth.getUser()`) and scope Supabase database queries to the authenticated user's ID (e.g., using `.eq('user_id', user.id)`) to prevent IDOR.
