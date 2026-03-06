@@ -5,6 +5,11 @@ import { revalidatePath } from 'next/cache'
 
 export async function updateCartItem(itemId: string, quantity: number) {
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+        return { error: 'Not authenticated' }
+    }
 
     if (quantity < 1) {
         // If quantity is effectively 0, delete it
@@ -12,16 +17,20 @@ export async function updateCartItem(itemId: string, quantity: number) {
             .from('cart_items')
             .delete()
             .eq('id', itemId)
+            .eq('user_id', user.id)
 
-        if (error) return { error: error.message }
+        // Do not leak error details
+        if (error) return { error: 'Failed to delete cart item' }
     } else {
         // Update quantity
         const { error } = await supabase
             .from('cart_items')
             .update({ quantity })
             .eq('id', itemId)
+            .eq('user_id', user.id)
 
-        if (error) return { error: error.message }
+        // Do not leak error details
+        if (error) return { error: 'Failed to update cart item' }
     }
 
     revalidatePath('/cart')
@@ -31,19 +40,27 @@ export async function updateCartItem(itemId: string, quantity: number) {
 
 export async function removeCartItem(itemId: string) {
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+        return { error: 'Not authenticated' }
+    }
 
     const { error } = await supabase
         .from('cart_items')
         .delete()
         .eq('id', itemId)
+        .eq('user_id', user.id)
 
-    if (error) return { error: error.message }
+    // Do not leak error details
+    if (error) return { error: 'Failed to remove cart item' }
 
     revalidatePath('/cart')
     revalidatePath('/profile')
     return { success: true }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function checkout(formData?: FormData) {
     // This would integrate with Stripe or similar
     const supabase = await createClient()
