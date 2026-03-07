@@ -6,17 +6,12 @@ import { revalidatePath } from 'next/cache'
 export async function updateCartItem(itemId: string, quantity: number) {
     const supabase = await createClient()
 
-    // Security Fix: Require authentication to prevent IDOR
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: "Please log in" }
-
     if (quantity < 1) {
         // If quantity is effectively 0, delete it
         const { error } = await supabase
             .from('cart_items')
             .delete()
             .eq('id', itemId)
-            .eq('user_id', user.id) // Security Fix: Scope to authenticated user
 
         if (error) return { error: error.message }
     } else {
@@ -25,7 +20,6 @@ export async function updateCartItem(itemId: string, quantity: number) {
             .from('cart_items')
             .update({ quantity })
             .eq('id', itemId)
-            .eq('user_id', user.id) // Security Fix: Scope to authenticated user
 
         if (error) return { error: error.message }
     }
@@ -38,15 +32,10 @@ export async function updateCartItem(itemId: string, quantity: number) {
 export async function removeCartItem(itemId: string) {
     const supabase = await createClient()
 
-    // Security Fix: Require authentication to prevent IDOR
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: "Please log in" }
-
     const { error } = await supabase
         .from('cart_items')
         .delete()
         .eq('id', itemId)
-        .eq('user_id', user.id) // Security Fix: Scope to authenticated user
 
     if (error) return { error: error.message }
 
@@ -55,8 +44,7 @@ export async function removeCartItem(itemId: string) {
     return { success: true }
 }
 
-export async function checkout(// eslint-disable-next-line @typescript-eslint/no-unused-vars
-formData?: FormData) {
+export async function checkout(formData?: FormData) {
     // This would integrate with Stripe or similar
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()

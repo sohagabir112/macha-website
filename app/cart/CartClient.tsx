@@ -6,7 +6,7 @@ import { Trash2, Plus, Minus, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
-export default function CartClient({ initialItems }: { initialItems: any[] }) {
+export default function CartClient({ initialItems }: { initialItems: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */ }) {
     const [items, setItems] = useState(initialItems)
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({})
     const [isCheckingOut, setIsCheckingOut] = useState(false)

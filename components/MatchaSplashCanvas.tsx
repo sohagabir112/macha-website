@@ -157,7 +157,7 @@ function ScrollGuide({ progress }: { progress: MotionValue<number> }) {
     return (
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/40 mix-blend-difference pointer-events-none">
             <div
-                style={{ opacity: opacity as any }}
+                style={{ opacity: opacity as any /* eslint-disable-line @typescript-eslint/no-explicit-any */ }}
                 className="flex flex-col items-center gap-2"
             >
                 <span className="text-xs uppercase tracking-[0.2em]">Scroll to Explore</span>

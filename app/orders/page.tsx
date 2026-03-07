@@ -67,7 +67,7 @@ export default async function OrdersPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    {JSON.parse(order.items || '[]').map((item: any, idx: number) => (
+                                    {JSON.parse(order.items || '[]').map((item: any /* eslint-disable-line @typescript-eslint/no-explicit-any */, idx: number) => (
                                         <div key={idx} className="flex justify-between items-center text-sm py-1">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-1 h-1 bg-white/20 rounded-full" />
