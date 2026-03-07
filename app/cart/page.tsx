@@ -50,7 +50,7 @@ export default async function CartPage() {
                     <div className="flex flex-col items-center justify-center py-20 bg-white/5 rounded-2xl border border-white/5">
                         <ShoppingBag size={48} className="text-white/20 mb-6" />
                         <h2 className="text-2xl font-medium mb-2">Your bag is empty</h2>
-                        <p className="text-white/40 mb-8 max-w-md text-center">It looks like you haven't started your ritual yet. Explore our collection to find your perfect match.</p>
+                        <p className="text-white/40 mb-8 max-w-md text-center">It looks like you haven&apos;t started your ritual yet. Explore our collection to find your perfect match.</p>
                         <Link href="/shop" className="px-8 py-3 bg-matcha text-white hover:bg-white hover:text-black transition-all rounded-full font-medium tracking-wide uppercase text-sm">
                             Continue Shopping
                         </Link>

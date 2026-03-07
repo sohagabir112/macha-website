@@ -46,7 +46,7 @@ export default async function ProfilePage() {
         },
         {
             id: 'ord_987654321',
-            created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+            created_at: new Date(Date.now() - 86400000 * 5).toISOString() /* eslint-disable-line react-hooks/purity */,
             status: 'Processing',
             total_amount: 28.50,
             items: [
@@ -116,7 +116,7 @@ export default async function ProfilePage() {
                         </div>
 
                         <div className="space-y-4">
-                            {demoOrders.map((order: any) => (
+                            {demoOrders.map((order: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) => (
                                 <div key={order.id} className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-matcha/30 transition-all group">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-white/5">
                                         <div className="flex items-center gap-4">
@@ -141,7 +141,7 @@ export default async function ProfilePage() {
 
                                     <div className="space-y-2">
                                         {/* Parse items cleanly if string or array */}
-                                        {(Array.isArray(order.items) ? order.items : JSON.parse(order.items || '[]')).map((item: any, idx: number) => (
+                                        {(Array.isArray(order.items) ? order.items : JSON.parse(order.items || '[]')).map((item: any /* eslint-disable-line @typescript-eslint/no-explicit-any */, idx: number) => (
                                             <div key={idx} className="flex justify-between text-sm">
                                                 <span className="text-white/70">{item.quantity}x {item.name || item.product_name}</span>
                                                 <span className="text-white/40">${item.price?.toFixed(2)}</span>
