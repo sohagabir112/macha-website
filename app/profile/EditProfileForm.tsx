@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { updateProfile } from './actions'
-import { User, Save, X } from 'lucide-react'
-import Image from 'next/image'
+import { Save } from 'lucide-react'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function EditProfileForm({ profile, onCancel }: { profile: any, onCancel: () => void }) {
     // We can use useFormState but simple state for now
     const [loading, setLoading] = useState(false)
@@ -21,6 +21,7 @@ export default function EditProfileForm({ profile, onCancel }: { profile: any, o
             } else {
                 onCancel() // Close edit mode
             }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             setError("Failed to update profile")
         } finally {
