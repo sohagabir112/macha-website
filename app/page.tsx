@@ -6,6 +6,8 @@ import Link from "next/link";
 import MatchaSplashCanvas from "@/components/MatchaSplashCanvas";
 import ProductSection from "@/components/ProductSection";
 
+import { MotionValue } from "framer-motion";
+
 // Helper for Scrollytelling Beats
 function OverlaySection({
   range,
@@ -14,7 +16,7 @@ function OverlaySection({
   className = ""
 }: {
   range: [number, number],
-  progress: any,
+  progress: MotionValue<number>,
   children: React.ReactNode,
   className?: string
 }) {
