@@ -1,0 +1,4 @@
+## 2024-05-18 - Open Redirect via Protocol-Relative URLs
+**Vulnerability:** The application read a `next` redirect parameter from the URL query string (`searchParams.get('next')`) and appended it to the application's origin to perform a redirect. An attacker could craft a malicious link setting `next` to a protocol-relative URL like `//attacker.com`, which browsers interpret as `https://attacker.com`, leading to an Open Redirect vulnerability.
+**Learning:** Checking for a relative path isn't enough; even if we append it to our origin, a protocol-relative URL can still act as an absolute URL and redirect off-site.
+**Prevention:** To prevent open redirect vulnerabilities, URL search parameters used for redirection (like `next`) must always be sanitized to ensure they begin with a single `/` and not `//`.
