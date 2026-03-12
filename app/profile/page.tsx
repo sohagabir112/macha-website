@@ -3,7 +3,6 @@ import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { User, ShoppingBag, Package, LogOut, CreditCard } from 'lucide-react';
-import Image from 'next/image';
 import ProfileInfo from './ProfileInfo';
 
 async function getUserData() {
@@ -46,7 +45,7 @@ export default async function ProfilePage() {
         },
         {
             id: 'ord_987654321',
-            created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+            created_at: new Date('2024-03-01T12:00:00.000Z').toISOString(),
             status: 'Processing',
             total_amount: 28.50,
             items: [
@@ -116,6 +115,7 @@ export default async function ProfilePage() {
                         </div>
 
                         <div className="space-y-4">
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                             {demoOrders.map((order: any) => (
                                 <div key={order.id} className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-matcha/30 transition-all group">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-white/5">
@@ -141,6 +141,7 @@ export default async function ProfilePage() {
 
                                     <div className="space-y-2">
                                         {/* Parse items cleanly if string or array */}
+                                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                         {(Array.isArray(order.items) ? order.items : JSON.parse(order.items || '[]')).map((item: any, idx: number) => (
                                             <div key={idx} className="flex justify-between text-sm">
                                                 <span className="text-white/70">{item.quantity}x {item.name || item.product_name}</span>
