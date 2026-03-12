@@ -6,6 +6,7 @@ import { Trash2, Plus, Minus, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function CartClient({ initialItems }: { initialItems: any[] }) {
     const [items, setItems] = useState(initialItems)
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({})
