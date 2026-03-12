@@ -1,0 +1,4 @@
+## 2024-03-12 - Insecure Direct Object Reference (IDOR) in Server Actions
+**Vulnerability:** Server actions (`updateCartItem`, `removeCartItem`) permitted modifications to records based solely on the requested `itemId` without validating if the item actually belonged to the user making the request. An attacker could modify or delete another user's cart item by guessing or iterating over valid `itemId`s.
+**Learning:** In Next.js server actions, direct database updates and deletes must explicitly verify user authorization. The application framework doesn't automatically enforce ownership constraints just because the request is sent from the client.
+**Prevention:** Always fetch the current authenticated user inside the server action (`supabase.auth.getUser()`) and chain `.eq('user_id', user.id)` on database mutations (updates/deletes) involving user-specific records.
