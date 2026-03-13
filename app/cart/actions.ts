@@ -6,22 +6,30 @@ import { revalidatePath } from 'next/cache'
 export async function updateCartItem(itemId: string, quantity: number) {
     const supabase = await createClient()
 
+    // SECURITY: Validate authentication to prevent unauthorized modifications
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: "Please log in" }
+
     if (quantity < 1) {
         // If quantity is effectively 0, delete it
+        // SECURITY: Scope query to authenticated user's ID to prevent IDOR
         const { error } = await supabase
             .from('cart_items')
             .delete()
             .eq('id', itemId)
+            .eq('user_id', user.id)
 
-        if (error) return { error: error.message }
+        if (error) return { error: "Failed to remove item" } // SECURITY: Don't leak DB error details
     } else {
         // Update quantity
+        // SECURITY: Scope query to authenticated user's ID to prevent IDOR
         const { error } = await supabase
             .from('cart_items')
             .update({ quantity })
             .eq('id', itemId)
+            .eq('user_id', user.id)
 
-        if (error) return { error: error.message }
+        if (error) return { error: "Failed to update item" } // SECURITY: Don't leak DB error details
     }
 
     revalidatePath('/cart')
@@ -32,18 +40,25 @@ export async function updateCartItem(itemId: string, quantity: number) {
 export async function removeCartItem(itemId: string) {
     const supabase = await createClient()
 
+    // SECURITY: Validate authentication to prevent unauthorized modifications
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: "Please log in" }
+
+    // SECURITY: Scope query to authenticated user's ID to prevent IDOR
     const { error } = await supabase
         .from('cart_items')
         .delete()
         .eq('id', itemId)
+        .eq('user_id', user.id)
 
-    if (error) return { error: error.message }
+    if (error) return { error: "Failed to remove item" } // SECURITY: Don't leak DB error details
 
     revalidatePath('/cart')
     revalidatePath('/profile')
     return { success: true }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function checkout(formData?: FormData) {
     // This would integrate with Stripe or similar
     const supabase = await createClient()
