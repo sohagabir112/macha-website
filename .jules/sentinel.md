@@ -1,0 +1,4 @@
+## 2024-05-24 - IDOR in Database Row Mutations
+**Vulnerability:** Server actions (`updateCartItem`, `removeCartItem`) manipulated rows without verifying if the row belonged to the currently authenticated user. By providing an arbitrary `itemId`, any user could alter or delete rows belonging to other users.
+**Learning:** In Supabase, relying entirely on RLS policies or client-side checks is not enough if the service role is used, or if RLS policies are missing/misconfigured. We must always perform explicit server-side checks.
+**Prevention:** Always validate `supabase.auth.getUser()` to ensure a user is authenticated, and explicitly append `.eq('user_id', user.id)` to Supabase update/delete/select operations to enforce scoping, creating an ironclad barrier against IDORs.
