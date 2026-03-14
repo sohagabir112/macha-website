@@ -157,6 +157,7 @@ function ScrollGuide({ progress }: { progress: MotionValue<number> }) {
     return (
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/40 mix-blend-difference pointer-events-none">
             <div
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 style={{ opacity: opacity as any }}
                 className="flex flex-col items-center gap-2"
             >

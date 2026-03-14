@@ -68,6 +68,7 @@ export default function ShopPage() {
     const [loadingId, setLoadingId] = useState<number | null>(null);
     const [successId, setSuccessId] = useState<number | null>(null);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleAddToCart = async (product: any) => {
         setLoadingId(product.id);
 
