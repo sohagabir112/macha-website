@@ -55,6 +55,7 @@ export async function removeCartItem(itemId: string) {
     return { success: true }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function checkout(formData?: FormData) {
     // This would integrate with Stripe or similar
     const supabase = await createClient()
