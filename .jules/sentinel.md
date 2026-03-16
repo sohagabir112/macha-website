@@ -1,0 +1,4 @@
+## 2024-05-18 - Open Redirect Vulnerability in Auth Callback
+**Vulnerability:** The 'next' search parameter in `/app/auth/callback/route.ts` was used for redirection after successful authentication without being properly validated or sanitized. An attacker could craft a link with `?next=//malicious.site.com` or `?next=http://malicious.site.com`, potentially leading to an open redirect attack, stealing tokens or tricking users into phishing sites.
+**Learning:** Even internal query parameters used for "friendly" redirects must be treated as untrusted user input and sanitized to ensure they match expected internal paths (like relative links starting with a single `/`). Protocol-relative URLs (`//`) bypass simple prefix checks and require explicit filtering.
+**Prevention:** Always validate URLs derived from user input before redirecting. Ensure they strictly start with a single `/` and do not start with `//`, or explicitly validate against an allowed list of domains.
