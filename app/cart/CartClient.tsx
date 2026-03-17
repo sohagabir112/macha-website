@@ -1,16 +1,13 @@
 "use client"
 
 import { useState } from 'react'
-import { updateCartItem, removeCartItem, checkout } from './actions'
-import { Trash2, Plus, Minus, Loader2 } from 'lucide-react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { updateCartItem, removeCartItem } from './actions'
+import { Trash2, Plus, Minus } from 'lucide-react'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function CartClient({ initialItems }: { initialItems: any[] }) {
     const [items, setItems] = useState(initialItems)
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({})
-    const [isCheckingOut, setIsCheckingOut] = useState(false)
-    const router = useRouter()
 
     const handleUpdateQuantity = async (id: string, newQuantity: number) => {
         setLoadingMap(prev => ({ ...prev, [id]: true }))
