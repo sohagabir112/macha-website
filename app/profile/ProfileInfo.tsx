@@ -5,6 +5,7 @@ import { User, Edit2 } from 'lucide-react'
 import Image from 'next/image'
 import EditProfileForm from './EditProfileForm'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function ProfileInfo({ profile, user, children }: { profile: any, user: any, children: React.ReactNode }) {
     const [isEditing, setIsEditing] = useState(false)
 
