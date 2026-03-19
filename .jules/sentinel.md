@@ -1,0 +1,4 @@
+## 2024-05-20 - [HIGH] Fix IDOR in Server Actions
+**Vulnerability:** Server actions in Next.js for cart item updates and removals were accepting an `itemId` and directly performing SQL updates/deletes without verifying that the logged-in user owned the cart item being modified. This allowed any logged-in user to modify or delete any other user's cart items if they knew the `itemId` (Insecure Direct Object Reference).
+**Learning:** Next.js server actions are inherently public APIs. Even if the UI only shows a user's own items, the server action can be called directly with any arguments. Always re-validate the current user in server actions and scope all database operations to the authenticated user.
+**Prevention:** Always extract `user.id` from `supabase.auth.getUser()` inside every server action that modifies data. Always append `.eq('user_id', user.id)` to Supabase queries to enforce authorization dynamically at the query level.
