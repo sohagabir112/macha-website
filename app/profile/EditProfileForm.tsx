@@ -2,10 +2,9 @@
 
 import { useState } from 'react'
 import { updateProfile } from './actions'
-import { User, Save, X } from 'lucide-react'
-import Image from 'next/image'
+import { Save } from 'lucide-react'
 
-export default function EditProfileForm({ profile, onCancel }: { profile: any, onCancel: () => void }) {
+export default function EditProfileForm({ profile, onCancel }: { profile: Record<string, unknown>, onCancel: () => void }) {
     // We can use useFormState but simple state for now
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -21,6 +20,7 @@ export default function EditProfileForm({ profile, onCancel }: { profile: any, o
             } else {
                 onCancel() // Close edit mode
             }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             setError("Failed to update profile")
         } finally {
@@ -39,7 +39,7 @@ export default function EditProfileForm({ profile, onCancel }: { profile: any, o
                     <label className="block text-sm text-white/60 mb-1">Full Name</label>
                     <input
                         name="fullName"
-                        defaultValue={profile?.full_name}
+                        defaultValue={profile?.full_name as string}
                         className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-matcha"
                         required
                     />
@@ -49,7 +49,7 @@ export default function EditProfileForm({ profile, onCancel }: { profile: any, o
                     <label className="block text-sm text-white/60 mb-1">Username</label>
                     <input
                         name="username"
-                        defaultValue={profile?.username}
+                        defaultValue={profile?.username as string}
                         className="w-full bg-black/50 border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-matcha"
                         required
                     />

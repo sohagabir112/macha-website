@@ -14,7 +14,7 @@ function OverlaySection({
   className = ""
 }: {
   range: [number, number],
-  progress: any,
+  progress: unknown,
   children: React.ReactNode,
   className?: string
 }) {
@@ -24,13 +24,13 @@ function OverlaySection({
   const fadeOutStart = end - ((end - start) * 0.1);
 
   const opacity = useTransform(
-    progress,
+    progress as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     [start, fadeInEnd, fadeOutStart, end],
     [0, 1, 1, 0]
   );
 
   const y = useTransform(
-    progress,
+    progress as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     [start, end],
     [20, -20]
   );

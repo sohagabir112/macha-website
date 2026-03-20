@@ -68,7 +68,7 @@ export default function ShopPage() {
     const [loadingId, setLoadingId] = useState<number | null>(null);
     const [successId, setSuccessId] = useState<number | null>(null);
 
-    const handleAddToCart = async (product: any) => {
+    const handleAddToCart = async (product: Record<string, any>) => {
         setLoadingId(product.id);
 
         try {
