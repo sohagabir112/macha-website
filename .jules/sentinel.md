@@ -1,0 +1,4 @@
+## 2025-02-13 - [Insecure Direct Object Reference (IDOR) in Cart Actions]
+**Vulnerability:** The `updateCartItem` and `removeCartItem` server actions accepted an `itemId` and directly deleted or updated cart items in the database without checking if the item actually belonged to the user making the request.
+**Learning:** This is a classic IDOR vulnerability. Even if a user must be authenticated to access a feature, every server action that modifies data must explicitly verify that the authenticated user owns or has permission to modify that specific data record. The application failed to scope the database queries using `.eq('user_id', user.id)`.
+**Prevention:** Always fetch the current user's session (`supabase.auth.getUser()`) in server actions that modify user data. Add an explicit `.eq('user_id', user.id)` clause to all Supabase `update()` and `delete()` operations to enforce ownership at the query level.
