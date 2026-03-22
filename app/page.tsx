@@ -14,6 +14,7 @@ function OverlaySection({
   className = ""
 }: {
   range: [number, number],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   progress: any,
   children: React.ReactNode,
   className?: string
