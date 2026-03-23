@@ -1,0 +1,4 @@
+## 2026-03-23 - [HIGH] Fix Open Redirect in Supabase Auth Callback
+**Vulnerability:** The `/auth/callback` route was reading the `next` search parameter directly and appending it to the `origin` URL to redirect the user after a successful login without verifying that the parameter is a safe relative path.
+**Learning:** This is a classic open redirect vulnerability. Attackers can supply a payload like `next=//malicious.com` which, when appended to the origin, results in a redirect to `https://example.com//malicious.com`, which browsers interpret as a protocol-relative redirect to `malicious.com`.
+**Prevention:** Always validate and sanitize user-supplied redirection URLs. Ensure they start with a single forward slash `/` and not double forward slashes `//` before appending them to the domain, or whitelist allowed redirection targets.
