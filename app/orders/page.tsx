@@ -2,7 +2,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { Package, ArrowLeft, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { Package, ArrowLeft, Clock } from 'lucide-react';
 
 async function getOrders() {
     const supabase = await createClient();
@@ -67,14 +67,14 @@ export default async function OrdersPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    {JSON.parse(order.items || '[]').map((item: any, idx: number) => (
+                                    {JSON.parse(order.items || '[]').map((item: Record<string, unknown>, idx: number) => (
                                         <div key={idx} className="flex justify-between items-center text-sm py-1">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-1 h-1 bg-white/20 rounded-full" />
-                                                <span className="text-white/80">{item.product_name}</span>
-                                                <span className="text-white/30 text-xs">x{item.quantity}</span>
+                                                <span className="text-white/80">{item.product_name as string}</span>
+                                                <span className="text-white/30 text-xs">x{item.quantity as number}</span>
                                             </div>
-                                            <span className="font-mono text-white/50">${item.price}</span>
+                                            <span className="font-mono text-white/50">${item.price as string | number}</span>
                                         </div>
                                     ))}
                                 </div>
