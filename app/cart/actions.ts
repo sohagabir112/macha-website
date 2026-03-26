@@ -6,22 +6,28 @@ import { revalidatePath } from 'next/cache'
 export async function updateCartItem(itemId: string, quantity: number) {
     const supabase = await createClient()
 
+    // SECURITY: Validate authentication and authorize access to prevent IDOR
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: "Please log in to update your cart." }
+
     if (quantity < 1) {
         // If quantity is effectively 0, delete it
         const { error } = await supabase
             .from('cart_items')
             .delete()
             .eq('id', itemId)
+            .eq('user_id', user.id) // Ensure the item belongs to the authenticated user
 
-        if (error) return { error: error.message }
+        if (error) return { error: 'Failed to update cart item.' } // Fail securely without leaking details
     } else {
         // Update quantity
         const { error } = await supabase
             .from('cart_items')
             .update({ quantity })
             .eq('id', itemId)
+            .eq('user_id', user.id) // Ensure the item belongs to the authenticated user
 
-        if (error) return { error: error.message }
+        if (error) return { error: 'Failed to update cart item.' } // Fail securely without leaking details
     }
 
     revalidatePath('/cart')
@@ -32,18 +38,24 @@ export async function updateCartItem(itemId: string, quantity: number) {
 export async function removeCartItem(itemId: string) {
     const supabase = await createClient()
 
+    // SECURITY: Validate authentication and authorize access to prevent IDOR
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: "Please log in to update your cart." }
+
     const { error } = await supabase
         .from('cart_items')
         .delete()
         .eq('id', itemId)
+        .eq('user_id', user.id) // Ensure the item belongs to the authenticated user
 
-    if (error) return { error: error.message }
+    if (error) return { error: 'Failed to remove cart item.' } // Fail securely without leaking details
 
     revalidatePath('/cart')
     revalidatePath('/profile')
     return { success: true }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function checkout(formData?: FormData) {
     // This would integrate with Stripe or similar
     const supabase = await createClient()
