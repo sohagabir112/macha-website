@@ -6,12 +6,18 @@ import { revalidatePath } from 'next/cache'
 export async function updateCartItem(itemId: string, quantity: number) {
     const supabase = await createClient()
 
+    // SECURITY: Ensure user is authenticated to prevent unauthenticated access
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: "Not authenticated" }
+
     if (quantity < 1) {
         // If quantity is effectively 0, delete it
         const { error } = await supabase
             .from('cart_items')
             .delete()
             .eq('id', itemId)
+            // SECURITY: Ensure user can only delete their own cart items (Prevent IDOR)
+            .eq('user_id', user.id)
 
         if (error) return { error: error.message }
     } else {
@@ -20,6 +26,8 @@ export async function updateCartItem(itemId: string, quantity: number) {
             .from('cart_items')
             .update({ quantity })
             .eq('id', itemId)
+            // SECURITY: Ensure user can only modify their own cart items (Prevent IDOR)
+            .eq('user_id', user.id)
 
         if (error) return { error: error.message }
     }
@@ -32,10 +40,16 @@ export async function updateCartItem(itemId: string, quantity: number) {
 export async function removeCartItem(itemId: string) {
     const supabase = await createClient()
 
+    // SECURITY: Ensure user is authenticated to prevent unauthenticated access
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: "Not authenticated" }
+
     const { error } = await supabase
         .from('cart_items')
         .delete()
         .eq('id', itemId)
+        // SECURITY: Ensure user can only delete their own cart items (Prevent IDOR)
+        .eq('user_id', user.id)
 
     if (error) return { error: error.message }
 
@@ -44,6 +58,7 @@ export async function removeCartItem(itemId: string) {
     return { success: true }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function checkout(formData?: FormData) {
     // This would integrate with Stripe or similar
     const supabase = await createClient()
