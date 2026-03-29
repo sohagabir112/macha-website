@@ -3,7 +3,6 @@ import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { User, ShoppingBag, Package, LogOut, CreditCard } from 'lucide-react';
-import Image from 'next/image';
 import ProfileInfo from './ProfileInfo';
 
 async function getUserData() {
@@ -46,6 +45,7 @@ export default async function ProfilePage() {
         },
         {
             id: 'ord_987654321',
+            // eslint-disable-next-line react-hooks/purity
             created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
             status: 'Processing',
             total_amount: 28.50,
@@ -102,7 +102,7 @@ export default async function ProfilePage() {
                     {/* Welcome Banner */}
                     <div className="bg-gradient-to-r from-matcha/20 to-transparent border border-white/10 rounded-2xl p-8 relative overflow-hidden">
                         <div className="relative z-10">
-                            <h1 className="text-3xl font-bold mb-2">Hello, {profile?.full_name?.split(' ')[0] || 'Friend'}</h1>
+                            <h1 className="text-3xl font-bold mb-2">Hello, {(profile?.full_name as string)?.split(' ')[0] || 'Friend'}</h1>
                             <p className="text-white/60 max-w-md">Track your orders, manage your subscription, and explore new matcha blends curated just for you.</p>
                         </div>
                         <Package className="absolute right-8 bottom-[-20px] text-matcha/10 w-32 h-32 rotate-12" />
@@ -116,16 +116,16 @@ export default async function ProfilePage() {
                         </div>
 
                         <div className="space-y-4">
-                            {demoOrders.map((order: any) => (
-                                <div key={order.id} className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-matcha/30 transition-all group">
+                            {demoOrders.map((order: Record<string, unknown>) => (
+                                <div key={String(order.id)} className="bg-white/5 border border-white/10 rounded-xl p-6 hover:border-matcha/30 transition-all group">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-white/5">
                                         <div className="flex items-center gap-4">
                                             <div className="p-3 bg-white/5 rounded-lg text-matcha">
                                                 <Package size={20} />
                                             </div>
                                             <div>
-                                                <p className="font-mono text-sm text-white/40">ORDER #{order.id.slice(-6).toUpperCase()}</p>
-                                                <p className="text-xs text-white/30">{new Date(order.created_at).toLocaleDateString()} at {new Date(order.created_at).toLocaleTimeString()}</p>
+                                                <p className="font-mono text-sm text-white/40">ORDER #{String(order.id).slice(-6).toUpperCase()}</p>
+                                                <p className="text-xs text-white/30">{new Date(String(order.created_at)).toLocaleDateString()} at {new Date(String(order.created_at)).toLocaleTimeString()}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-3">
@@ -133,18 +133,18 @@ export default async function ProfilePage() {
                                                 ? 'bg-green-500/10 text-green-400 border-green-500/20'
                                                 : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
                                                 }`}>
-                                                {order.status}
+                                                {String(order.status)}
                                             </span>
-                                            <span className="text-lg font-bold">${order.total_amount.toFixed(2)}</span>
+                                            <span className="text-lg font-bold">${Number(order.total_amount).toFixed(2)}</span>
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
                                         {/* Parse items cleanly if string or array */}
-                                        {(Array.isArray(order.items) ? order.items : JSON.parse(order.items || '[]')).map((item: any, idx: number) => (
+                                        {(Array.isArray(order.items) ? order.items : JSON.parse(order.items as string || '[]')).map((item: Record<string, unknown>, idx: number) => (
                                             <div key={idx} className="flex justify-between text-sm">
-                                                <span className="text-white/70">{item.quantity}x {item.name || item.product_name}</span>
-                                                <span className="text-white/40">${item.price?.toFixed(2)}</span>
+                                                <span className="text-white/70">{Number(item.quantity)}x {String(item.name || item.product_name)}</span>
+                                                <span className="text-white/40">${Number(item.price)?.toFixed(2)}</span>
                                             </div>
                                         ))}
                                     </div>

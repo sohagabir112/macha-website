@@ -14,7 +14,7 @@ function OverlaySection({
   className = ""
 }: {
   range: [number, number],
-  progress: any,
+  progress: import('framer-motion').MotionValue<number>,
   children: React.ReactNode,
   className?: string
 }) {

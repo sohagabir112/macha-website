@@ -68,8 +68,8 @@ export default function ShopPage() {
     const [loadingId, setLoadingId] = useState<number | null>(null);
     const [successId, setSuccessId] = useState<number | null>(null);
 
-    const handleAddToCart = async (product: any) => {
-        setLoadingId(product.id);
+    const handleAddToCart = async (product: Record<string, unknown>) => {
+        setLoadingId(product.id as number);
 
         try {
             const result = await addToCart(product);
@@ -81,7 +81,7 @@ export default function ShopPage() {
                     alert(result.error);
                 }
             } else {
-                setSuccessId(product.id);
+                setSuccessId(product.id as number);
                 setTimeout(() => setSuccessId(null), 2000); // Reset success after 2s
             }
         } catch (error) {
