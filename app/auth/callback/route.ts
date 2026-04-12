@@ -6,7 +6,13 @@ export async function GET(request: Request) {
     const { searchParams, origin } = new URL(request.url)
     const code = searchParams.get('code')
     // if "next" is in param, use it as the redirect URL
-    const next = searchParams.get('next') ?? '/'
+    let next = searchParams.get('next') ?? '/'
+
+    // SECURE: Prevent open redirect vulnerabilities by strictly validating the 'next' parameter
+    // to ensure it starts with a single '/' and is not a protocol-relative URL (e.g., '//attacker.com').
+    if (!next.startsWith('/') || next.startsWith('//')) {
+        next = '/'
+    }
 
     if (code) {
         const supabase = await createClient()
