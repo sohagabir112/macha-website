@@ -3,6 +3,16 @@
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 
+// 🛡️ Security: Server-side source of truth for prices
+const PRODUCT_CATALOG: Record<string, number> = {
+    "Ceremonial Grade A": 49.00,
+    "Daily Ritual Set": 85.00,
+    "Ceremonial Startup Kit": 110.00,
+    "Culinary Grade": 29.00,
+    "Bamboo Whisk (Chasen)": 25.00,
+    "Traditional Whisk": 22.00,
+};
+
 export async function addToCart(product: { name: string, price: string | number }) {
     const supabase = await createClient()
 
@@ -10,6 +20,12 @@ export async function addToCart(product: { name: string, price: string | number 
 
     if (!user) {
         return { error: "Please log in to add items to your cart." }
+    }
+
+    // 🛡️ Security: Validate product exists and get canonical price
+    const canonicalPrice = PRODUCT_CATALOG[product.name];
+    if (canonicalPrice === undefined) {
+        return { error: "Invalid product selected." };
     }
 
     // Check if item already exists in cart for this user
@@ -35,7 +51,7 @@ export async function addToCart(product: { name: string, price: string | number 
             .insert({
                 user_id: user.id,
                 product_name: product.name,
-                price: product.price,
+                price: canonicalPrice, // 🛡️ Security: Use server-side price, ignore client price
                 quantity: 1
             })
 
