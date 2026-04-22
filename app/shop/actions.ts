@@ -3,10 +3,26 @@
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 
+// 🚨 SECURITY: Define server-side source of truth for product prices to prevent manipulation
+const PRODUCT_PRICES: Record<string, number> = {
+    "Ceremonial Grade A": 49.00,
+    "Daily Ritual Set": 85.00,
+    "Ceremonial Startup Kit": 110.00,
+    "Culinary Grade": 29.00,
+    "Bamboo Whisk (Chasen)": 25.00,
+    "Traditional Whisk": 22.00,
+};
+
 export async function addToCart(product: { name: string, price: string | number }) {
     const supabase = await createClient()
 
     const { data: { user } } = await supabase.auth.getUser()
+
+    // 🚨 SECURITY: Validate client-provided product against server-side source of truth
+    const trustedPrice = PRODUCT_PRICES[product.name];
+    if (trustedPrice === undefined) {
+        return { error: "Invalid product selected." };
+    }
 
     if (!user) {
         return { error: "Please log in to add items to your cart." }
@@ -35,7 +51,7 @@ export async function addToCart(product: { name: string, price: string | number 
             .insert({
                 user_id: user.id,
                 product_name: product.name,
-                price: product.price,
+                price: trustedPrice, // 🚨 SECURITY: Use trusted server-side price, not client-provided price
                 quantity: 1
             })
 
