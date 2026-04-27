@@ -1,4 +1,4 @@
-## 2025-02-28 - [IDOR in Server Actions]
-**Vulnerability:** IDOR (Insecure Direct Object Reference) found in `app/cart/actions.ts`. Server actions `updateCartItem` and `removeCartItem` were directly updating/deleting records using only `itemId` without verifying ownership.
-**Learning:** Even when using Supabase (which might have RLS), application-level server actions must explicitly validate the authenticated user and scope database queries to the user's ID to provide defense in depth and ensure proper authorization.
-**Prevention:** Always fetch the current user via `supabase.auth.getUser()` in server actions that modify data, and always append `.eq('user_id', user.id)` to update/delete queries.
+## 2024-04-27 - Fix Price Manipulation Vulnerability in Shop Server Actions
+**Vulnerability:** The `addToCart` server action in `app/shop/actions.ts` accepted the product price directly from the client without server-side validation. This allowed an attacker to manipulate the HTTP request and add items to their cart with arbitrary, artificially low prices (e.g., $0.01 instead of $110.00).
+**Learning:** Server actions that process client data for sensitive operations (like pricing or authentication) must not trust the client input. Data should only be used as a lookup identifier, and actual values should be sourced from a trusted server-side catalog or database.
+**Prevention:** Always implement a server-side trusted catalog or database lookup for prices in e-commerce server actions. Only trust the client to provide the product identifier, and retrieve the corresponding authoritative price from the server source of truth to prevent price manipulation risks.
