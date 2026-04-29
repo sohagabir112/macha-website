@@ -3,10 +3,26 @@
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 
+// 🛡️ SECURITY: Server-side catalog to prevent price manipulation
+const TRUSTED_PRICES: Record<string, number> = {
+    "Ceremonial Grade A": 49.00,
+    "Daily Ritual Set": 85.00,
+    "Ceremonial Startup Kit": 110.00,
+    "Culinary Grade": 29.00,
+    "Bamboo Whisk (Chasen)": 25.00,
+    "Traditional Whisk": 22.00,
+}
+
 export async function addToCart(product: { name: string, price: string | number }) {
     const supabase = await createClient()
 
     const { data: { user } } = await supabase.auth.getUser()
+
+    // 🛡️ SECURITY: Validate product name and look up trusted price
+    const trustedPrice = TRUSTED_PRICES[product.name]
+    if (trustedPrice === undefined) {
+        return { error: "Invalid product selected." }
+    }
 
     if (!user) {
         return { error: "Please log in to add items to your cart." }
@@ -35,7 +51,7 @@ export async function addToCart(product: { name: string, price: string | number 
             .insert({
                 user_id: user.id,
                 product_name: product.name,
-                price: product.price,
+                price: trustedPrice, // 🛡️ SECURITY: Use trusted price, not client-provided
                 quantity: 1
             })
 
