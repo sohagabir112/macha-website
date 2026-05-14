@@ -2,9 +2,16 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { PRODUCTS } from '@/utils/products'
 
-export async function addToCart(product: { name: string, price: string | number }) {
+export async function addToCart(productData: { id: number }) {
     const supabase = await createClient()
+
+    // Server-side validation of product and pricing to prevent manipulation
+    const product = PRODUCTS.find(p => p.id === productData.id)
+    if (!product) {
+        return { error: "Product not found." }
+    }
 
     const { data: { user } } = await supabase.auth.getUser()
 
