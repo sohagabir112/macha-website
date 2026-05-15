@@ -2,7 +2,10 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { getProductByName } from '@/utils/products'
 
+// 🛡️ Security Fix: The `price` provided by the client is untrusted and can be manipulated.
+// We only use the `name` from the client and fetch the trusted `price` from the server.
 export async function addToCart(product: { name: string, price: string | number }) {
     const supabase = await createClient()
 
@@ -12,12 +15,18 @@ export async function addToCart(product: { name: string, price: string | number 
         return { error: "Please log in to add items to your cart." }
     }
 
+    // Validate product against server-side catalog
+    const serverProduct = getProductByName(product.name)
+    if (!serverProduct) {
+        return { error: "Invalid product." }
+    }
+
     // Check if item already exists in cart for this user
     const { data: existingItem } = await supabase
         .from('cart_items')
         .select('*')
         .eq('user_id', user.id)
-        .eq('product_name', product.name)
+        .eq('product_name', serverProduct.name)
         .single()
 
     if (existingItem) {
@@ -26,16 +35,17 @@ export async function addToCart(product: { name: string, price: string | number 
             .from('cart_items')
             .update({ quantity: existingItem.quantity + 1 })
             .eq('id', existingItem.id)
+            .eq('user_id', user.id) // Ensure IDOR protection
 
         if (error) return { error: error.message }
     } else {
-        // Insert new item
+        // Insert new item using trusted server price
         const { error } = await supabase
             .from('cart_items')
             .insert({
                 user_id: user.id,
-                product_name: product.name,
-                price: product.price,
+                product_name: serverProduct.name,
+                price: serverProduct.price, // Use trusted server price
                 quantity: 1
             })
 
