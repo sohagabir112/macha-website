@@ -1,30 +1,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-
-const PRODUCTS = [
-    {
-        id: 1,
-        name: "Ceremonial Grade A",
-        price: "$39.00",
-        tag: "Best Seller",
-        image: "/img/Ceremonial%20Grade%20A.png"
-    },
-    {
-        id: 2,
-        name: "Daily Ritual Set",
-        price: "$85.00",
-        tag: "Bundle",
-        image: "/img/Daily%20Ritual%20Set.png"
-    },
-    {
-        id: 3,
-        name: "Bamboo Whisk (Chasen)",
-        price: "$18.00",
-        tag: "Essential",
-        image: "/img/Bamboo%20Whisk%20(Chasen).png"
-    }
-];
+import { PRODUCTS } from "@/utils/products";
 
 export default function ProductSection() {
     return (
@@ -44,7 +21,7 @@ export default function ProductSection() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {PRODUCTS.map((product) => (
+                    {PRODUCTS.slice(0, 3).map((product) => (
                         <Link href="/shop" key={product.id} className="group cursor-pointer">
                             <div className="relative aspect-[4/5] bg-white/5 mb-6 overflow-hidden rounded-2xl border border-white/5 group-hover:border-matcha/30 transition-all duration-500">
 
@@ -76,7 +53,7 @@ export default function ProductSection() {
                                         {product.name}
                                     </h4>
                                 </div>
-                                <p className="text-white/60 font-mono text-lg">{product.price}</p>
+                                <p className="text-white/60 font-mono text-lg">${product.price.toFixed(2)}</p>
                             </div>
                         </Link>
                     ))}
