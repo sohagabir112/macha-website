@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { PRODUCTS } from '@/utils/products'
 
 export async function addToCart(product: { name: string, price: string | number }) {
     const supabase = await createClient()
@@ -12,12 +13,18 @@ export async function addToCart(product: { name: string, price: string | number 
         return { error: "Please log in to add items to your cart." }
     }
 
+    // SECURITY FIX: Look up the product in the trusted server-side catalog to verify price
+    const verifiedProduct = PRODUCTS.find(p => p.name === product.name)
+    if (!verifiedProduct) {
+        return { error: "Product not found." }
+    }
+
     // Check if item already exists in cart for this user
     const { data: existingItem } = await supabase
         .from('cart_items')
         .select('*')
         .eq('user_id', user.id)
-        .eq('product_name', product.name)
+        .eq('product_name', verifiedProduct.name)
         .single()
 
     if (existingItem) {
@@ -29,13 +36,13 @@ export async function addToCart(product: { name: string, price: string | number 
 
         if (error) return { error: error.message }
     } else {
-        // Insert new item
+        // Insert new item using the verified price from the server catalog, ignoring client input
         const { error } = await supabase
             .from('cart_items')
             .insert({
                 user_id: user.id,
-                product_name: product.name,
-                price: product.price,
+                product_name: verifiedProduct.name,
+                price: verifiedProduct.price,
                 quantity: 1
             })
 
