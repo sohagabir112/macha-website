@@ -2,14 +2,20 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { PRODUCTS } from '@/utils/products'
 
-export async function addToCart(product: { name: string, price: string | number }) {
+export async function addToCart(productId: number) {
     const supabase = await createClient()
 
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
         return { error: "Please log in to add items to your cart." }
+    }
+
+    const product = PRODUCTS.find(p => p.id === productId)
+    if (!product) {
+        return { error: "Product not found." }
     }
 
     // Check if item already exists in cart for this user
