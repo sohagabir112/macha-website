@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { getProductByName } from '@/utils/products'
 
 export async function addToCart(product: { name: string, price: string | number }) {
     const supabase = await createClient()
@@ -10,6 +11,12 @@ export async function addToCart(product: { name: string, price: string | number 
 
     if (!user) {
         return { error: "Please log in to add items to your cart." }
+    }
+
+    // SECURITY: Validate product against server-side source of truth to prevent price manipulation
+    const serverProduct = getProductByName(product.name)
+    if (!serverProduct) {
+        return { error: "Invalid product." }
     }
 
     // Check if item already exists in cart for this user
@@ -29,13 +36,13 @@ export async function addToCart(product: { name: string, price: string | number 
 
         if (error) return { error: error.message }
     } else {
-        // Insert new item
+        // Insert new item using trusted server-side price
         const { error } = await supabase
             .from('cart_items')
             .insert({
                 user_id: user.id,
-                product_name: product.name,
-                price: product.price,
+                product_name: serverProduct.name,
+                price: serverProduct.price,
                 quantity: 1
             })
 
