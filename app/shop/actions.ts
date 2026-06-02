@@ -2,9 +2,17 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { PRODUCTS } from '@/utils/products'
 
 export async function addToCart(product: { name: string, price: string | number }) {
     const supabase = await createClient()
+
+    // 🛡️ Security Fix: Prevent Price Manipulation by using server-side catalog as single source of truth
+    const catalogProduct = PRODUCTS.find(p => p.name === product.name)
+    if (!catalogProduct) {
+        return { error: "Invalid product selected." }
+    }
+    const securePrice = catalogProduct.price
 
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -34,8 +42,8 @@ export async function addToCart(product: { name: string, price: string | number 
             .from('cart_items')
             .insert({
                 user_id: user.id,
-                product_name: product.name,
-                price: product.price,
+                product_name: catalogProduct.name,
+                price: securePrice,
                 quantity: 1
             })
 
