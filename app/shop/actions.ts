@@ -2,11 +2,18 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { PRODUCTS } from '@/utils/products'
 
-export async function addToCart(product: { name: string, price: string | number }) {
+export async function addToCart(product: { name: string, price?: string | number }) {
     const supabase = await createClient()
 
     const { data: { user } } = await supabase.auth.getUser()
+
+    // Find the correct product data to enforce correct pricing
+    const catalogProduct = PRODUCTS.find((p) => p.name === product.name);
+    if (!catalogProduct) {
+        return { error: "Product not found." };
+    }
 
     if (!user) {
         return { error: "Please log in to add items to your cart." }
@@ -34,8 +41,8 @@ export async function addToCart(product: { name: string, price: string | number 
             .from('cart_items')
             .insert({
                 user_id: user.id,
-                product_name: product.name,
-                price: product.price,
+                product_name: catalogProduct.name,
+                price: catalogProduct.price,
                 quantity: 1
             })
 
