@@ -2,11 +2,23 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { PRODUCTS } from '@/utils/products'
 
 export async function addToCart(product: { name: string, price: string | number }) {
     const supabase = await createClient()
 
     const { data: { user } } = await supabase.auth.getUser()
+
+    // Find the product in our server-side source of truth
+    const serverProduct = PRODUCTS.find(p => p.name === product.name)
+    if (!serverProduct) {
+        return { error: "Product not found." }
+    }
+
+    // Verify the provided price matches the server-side price to prevent manipulation
+    if (Number(product.price) !== serverProduct.price) {
+        return { error: "Invalid product price." }
+    }
 
     if (!user) {
         return { error: "Please log in to add items to your cart." }
